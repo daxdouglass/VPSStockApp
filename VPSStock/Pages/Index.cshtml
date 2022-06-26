@@ -1,0 +1,58 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Location</th>
+      <th scope="col">Group</th>
+      <th scope="col">Price</th>
+      <th scope="col">Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+ 
+@using Newtonsoft.Json;
+@using System.IO;
+@using System.Net;
+
+
+@{
+        
+            string remoteUri = "https://raw.githubusercontent.com/a9-i/BuyVM-Stock-Data/main/buyvm-stock-data.json";
+            string savePath = @"E:\code\files\vps-stock.json";
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile(remoteUri, savePath);
+            string json = System.IO.File.ReadAllText(savePath);
+
+            List<dynamic> rows = JsonConvert.DeserializeObject<List<dynamic>>(json);
+            
+            @foreach (dynamic row in rows)
+            {
+                <tr>
+                <td>@row.name</td>
+                <td>@row.grp_location</td>
+                <td>@row.grp_type</td>
+                <td>@row.price</td>
+                @if (row.available == true)
+                    {
+                        <td>Available</td>
+                    }
+                    else
+                    {
+                        <td>Out of Stock</td>
+                    }
+
+                </tr>
+            }
+}
+</tbody>
+</table>
